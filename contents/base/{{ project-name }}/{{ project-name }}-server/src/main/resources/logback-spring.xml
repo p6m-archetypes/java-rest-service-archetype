@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty scope="context" name="loggingStructured" source="LOGGING_STRUCTURED" defaultValue="false"/>
+
+    <if condition='property("loggingStructured").equals("true")'>
+        <then>
+            <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+                <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+            </appender>
+            <root level="INFO">
+                <appender-ref ref="JSON"/>
+            </root>
+        </then>
+        <else>
+            <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+            <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+            <root level="INFO">
+                <appender-ref ref="CONSOLE"/>
+            </root>
+        </else>
+    </if>
+</configuration>

@@ -1,0 +1,82 @@
+description: "Java REST Service"
+authors: ["Jimmie Fulton <jimmie@ybor.ai>"]
+languages: ["Java"]
+frameworks: ["Spring Boot", "Spring MVC"]
+tags: ["rest", "http", "service", "maven"]
+
+requires:
+  archetect: "3.0.0"
+
+templating:
+  trim_blocks: true
+  lstrip_blocks: true
+
+catalog:
+  author:
+    source: "../../../personal/archetect-common/author-prompts-library"
+    library: true
+    show: false
+  org:
+    source: "../../../personal/archetect-common/org-prompts-library"
+    library: true
+    show: false
+  project:
+    source: "../../../personal/archetect-common/project-prompts-library"
+    library: true
+    show: false
+  editor-config:
+    source: "../../../personal/archetect-common/editor-config-library"
+    library: true
+    show: false
+  gitignore:
+    source: "../../../personal/archetect-common/gitignore-library"
+    library: true
+    show: false
+  scm:
+    source: "../../../personal/archetect-common/scm-library"
+    library: true
+    show: false
+  ports:
+    source: "../../../personal/archetect-common/ports-library"
+    library: true
+    show: false
+  archiver:
+    source: "../../../personal/archetect-common/archive-library"
+    library: true
+    show: false
+  platform-application-manifests:
+    source: "../platform-application-manifests-library"
+    library: true
+    show: false
+  java-ci:
+    source: "../java-ci-library"
+    library: true
+    show: false
+  java-resource-postgresql:
+    source: "../java-resource-postgresql-library"
+    library: true
+    show: false
+  java-resource-mysql:
+    source: "../java-resource-mysql-library"
+    library: true
+    show: false
+  java-resource-redis:
+    source: "../java-resource-redis-library"
+    library: true
+    show: false
+  java-resource-kafka:
+    source: "../java-resource-kafka-library"
+    library: true
+    show: false
+  java-resource-pulsar:
+    source: "../java-resource-pulsar-library"
+    library: true
+    show: false
+  java-resource-s3:
+    source: "../java-resource-s3-library"
+    library: true
+    show: false
+  java-resource-azure-blob:
+    source: "../java-resource-azure-blob-library"
+    library: true
+    show: false
