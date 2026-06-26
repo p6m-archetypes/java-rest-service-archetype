@@ -1,4 +1,4 @@
-package {{ group_id }}.it;
+package {{ root_package }}.it;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;

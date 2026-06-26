@@ -12,10 +12,17 @@ context:set("repo_name", context:get("project-name"))
 context:set("github_owner", context:get("org-solution-name"))
 
 -- Java-specific identity
+--
+-- Normalize an input into a valid lowercase Java package segment.
+local function pkg_segment(value)
+    return string.lower((string.gsub(tostring(value), "[^%w]", "")))
+end
+
+-- groupId is the shared Maven coordinate for the whole solution (org.solution).
+local group_id_default = pkg_segment(context:get("org_name")) .. "." .. pkg_segment(context:get("solution_name"))
 context:prompt_text("Maven Group ID:", "group_id", {
-    default = "dev.p6m." .. context:get("prefix-name"),
-    placeholder = "dev.p6m.billing",
-    help = "Maven groupId (e.g. dev.p6m.billing)",
+    default = group_id_default,
+    help = "Maven groupId shared across the solution (e.g. " .. group_id_default .. ")",
 })
 
 context:prompt_text("Artifactory Host:", "artifactory_host", {
@@ -24,8 +31,11 @@ context:prompt_text("Artifactory Host:", "artifactory_host", {
 })
 
 -- Derived keys
+-- root_package adds the project prefix so each application owns its own package
+-- namespace under the shared solution groupId (e.g. org.solution.prefix).
+context:set("root_package", context:get("group_id") .. "." .. pkg_segment(context:get("prefix-name")))
 context:set("project_title", context:get("PrefixName") .. " " .. context:get("SuffixName"))
-context:set("root_directory", (string.gsub(context:get("group_id"), "%.", "/")))
+context:set("root_directory", (string.gsub(context:get("root_package"), "%.", "/")))
 
 -- Service configuration
 require("ports").prompt(context)

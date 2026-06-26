@@ -1,4 +1,4 @@
-package {{ group_id }}.core;
+package {{ root_package }}.core;
 
 import org.springframework.context.annotation.Configuration;
 
