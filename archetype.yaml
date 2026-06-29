@@ -13,70 +13,70 @@ templating:
 
 catalog:
   author:
-    source: "../../../personal/archetect-common/author-prompts-library"
+    source: "git@github.com:archetect-common/author-prompts-library.git"
     library: true
     show: false
   org:
-    source: "../../../personal/archetect-common/org-prompts-library"
+    source: "git@github.com:archetect-common/org-prompts-library.git"
     library: true
     show: false
   project:
-    source: "../../../personal/archetect-common/project-prompts-library"
+    source: "git@github.com:archetect-common/project-prompts-library.git"
     library: true
     show: false
   editor-config:
-    source: "../../../personal/archetect-common/editor-config-library"
+    source: "git@github.com:archetect-common/editor-config-library.git"
     library: true
     show: false
   gitignore:
-    source: "../../../personal/archetect-common/gitignore-library"
+    source: "git@github.com:archetect-common/gitignore-library.git"
     library: true
     show: false
   scm:
-    source: "../../../personal/archetect-common/scm-library"
+    source: "git@github.com:archetect-common/scm-library.git"
     library: true
     show: false
   ports:
-    source: "../../../personal/archetect-common/ports-library"
+    source: "git@github.com:archetect-common/ports-library.git"
     library: true
     show: false
   archiver:
-    source: "../../../personal/archetect-common/archive-library"
+    source: "git@github.com:archetect-common/archive-library.git"
     library: true
     show: false
   platform-application-manifests:
-    source: "../platform-application-manifests-library"
+    source: "git@github.com:p6m-archetypes/platform-application-manifests-library.git#dev"
     library: true
     show: false
   java-ci:
-    source: "../java-ci-library"
+    source: "git@github.com:p6m-archetypes/java-ci-library.git#dev"
     library: true
     show: false
   java-resource-postgresql:
-    source: "../java-resource-postgresql-library"
+    source: "git@github.com:p6m-archetypes/java-resource-postgresql-library.git#dev"
     library: true
     show: false
   java-resource-mysql:
-    source: "../java-resource-mysql-library"
+    source: "git@github.com:p6m-archetypes/java-resource-mysql-library.git#dev"
     library: true
     show: false
   java-resource-redis:
-    source: "../java-resource-redis-library"
+    source: "git@github.com:p6m-archetypes/java-resource-redis-library.git#dev"
     library: true
     show: false
   java-resource-kafka:
-    source: "../java-resource-kafka-library"
+    source: "git@github.com:p6m-archetypes/java-resource-kafka-library.git#dev"
     library: true
     show: false
   java-resource-pulsar:
-    source: "../java-resource-pulsar-library"
+    source: "git@github.com:p6m-archetypes/java-resource-pulsar-library.git#dev"
     library: true
     show: false
   java-resource-s3:
-    source: "../java-resource-s3-library"
+    source: "git@github.com:p6m-archetypes/java-resource-s3-library.git#dev"
     library: true
     show: false
   java-resource-azure-blob:
-    source: "../java-resource-azure-blob-library"
+    source: "git@github.com:p6m-archetypes/java-resource-azure-blob-library.git#dev"
     library: true
     show: false
