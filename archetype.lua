@@ -38,7 +38,7 @@ context:set("project_title", context:get("PrefixName") .. " " .. context:get("Su
 context:set("root_directory", (string.gsub(context:get("root_package"), "%.", "/")))
 
 -- Service configuration
-require("ports").prompt(context)
+require("ports").prompt(context, { ports = { "service", "management", "debug" } })
 
 -- Resources
 context:prompt_select("Persistence:", "persistence", {
