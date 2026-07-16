@@ -62,12 +62,14 @@ local BASE_FILES = {
 
 -- Build the whole reactor, then repackage the server into a runnable boot jar. The archetype's
 -- spring-boot-maven-plugin has no repackage execution (images are built with jib), so `install`
--- alone yields a thin jar; a second, offline package+repackage (deps resolved from the reactor we
--- just installed) produces the executable jar we boot with `java -jar` - a single process prova can
--- manage and kill cleanly (unlike a forking `spring-boot:run`).
+-- alone yields a thin jar; a second package+repackage (siblings resolved from the reactor we just
+-- installed, `-nsu` to skip remote SNAPSHOT lookups) produces the executable jar we boot with
+-- `java -jar` - a single process prova can manage and kill cleanly (unlike a forking
+-- `spring-boot:run`). Not `-o`: offline can't resolve the `spring-boot` plugin prefix on a cold
+-- CI cache, since `install` never downloads that plugin.
 local function build(dir)
   shell.run("mvn -q -B -DskipTests install", { cwd = dir, timeout = "900s", check = true })
-  shell.run("mvn -q -B -o -pl example-service-server -DskipTests package spring-boot:repackage",
+  shell.run("mvn -q -B -nsu -pl example-service-server -DskipTests package spring-boot:repackage",
     { cwd = dir, timeout = "900s", check = true })
 end
 
