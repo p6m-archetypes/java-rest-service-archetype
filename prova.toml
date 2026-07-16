@@ -1,8 +1,7 @@
 # Prova acceptance tests: `prova` from the repo root runs the whole suite.
 #
-# jobs = 1: the suite renders the archetype many times, and archetect's renderer is not safe to run
-# concurrently (it stages fetched components through a shared cache). Serial execution also keeps the
-# heavy build/boot units from contending for CPU, memory, and Docker at once.
+# jobs = 1: the suite renders the archetype several times and boots real services against database
+# containers; serial execution keeps those heavy units from contending for CPU, memory, and Docker.
 [run]
 paths = ["tests"]
 jobs = 1
@@ -12,3 +11,9 @@ jobs = 1
 paths = ["tests"]
 jobs = 1
 format = "json"
+
+# Database containers come from prova's external plugin system (the built-in `db` module is not part
+# of the released prova binary). Pin released tags once the plugins cut releases.
+[plugins]
+postgres = "prova-rs/prova-postgres@main"
+mysql    = "prova-rs/prova-mysql@main"
