@@ -6,12 +6,10 @@
 --- Run from the archetype repo root (uses ./prova.toml):   prova
 --- requires docker + mvn + java (JDK 21); skips cleanly without them.
 ---
---- NOTE (why this matters): the archetype today is a SCAFFOLD - the service exposes only actuator
---- health/readiness and no application routes, and its persistence module ships a single empty Flyway
---- migration. prova *booting* the service against a real database is exactly what proves "renders +
---- compiles" is backed by a service that actually starts and connects. As the archetype grows real
---- REST CRUD over the persistence layer, the assertions below graduate from "readiness is UP / the
---- schema history was written" to real persisted state (POST -> row -> GET).
+--- NOTE: the persistence flavors now carry the standard CRUD surface (p6m standards S2 - see
+--- tests/standards_test.lua for the containerized standards bar). This suite keeps the host-level
+--- acceptance: layout, reactor build, boot against BOTH database backends (the standards suite
+--- exercises PostgreSQL only), Flyway migrations applied, and a POST -> row round-trip.
 
 local postgres = require("postgres")
 local mysql    = require("mysql")
@@ -43,7 +41,11 @@ end
 local PERSISTENCE_FILES = {
   "example-service-persistence/pom.xml",
   "example-service-persistence/src/main/java/acme/platform/example/persistence/PersistenceConfig.java",
+  "example-service-persistence/src/main/java/acme/platform/example/persistence/Item.java",
+  "example-service-persistence/src/main/java/acme/platform/example/persistence/ItemRepository.java",
   "example-service-persistence/src/main/resources/db/migration/V1__init.sql",
+  "example-service-persistence/src/main/resources/db/migration/V2__create_items.sql",
+  "example-service-server/src/main/java/acme/platform/example/server/api/ItemController.java",
   "example-service-server/src/main/resources/application-persistence.yaml",
 }
 
@@ -60,17 +62,12 @@ local BASE_FILES = {
   ".github/workflows/build.yaml",
 }
 
--- Build the whole reactor, then repackage the server into a runnable boot jar. The archetype's
--- spring-boot-maven-plugin has no repackage execution (images are built with jib), so `install`
--- alone yields a thin jar; a second package+repackage (siblings resolved from the reactor we just
--- installed, `-nsu` to skip remote SNAPSHOT lookups) produces the executable jar we boot with
--- `java -jar` - a single process prova can manage and kill cleanly (unlike a forking
--- `spring-boot:run`). Not `-o`: offline can't resolve the `spring-boot` plugin prefix on a cold
--- CI cache, since `install` never downloads that plugin.
+-- Build the whole reactor. The server pom binds spring-boot:repackage to `package` (the rendered
+-- Dockerfiles run the module jar with `java -jar`), so a single `install` already leaves the
+-- executable boot jar we run - a single process prova can manage and kill cleanly (unlike a
+-- forking `spring-boot:run`).
 local function build(dir)
   shell.run("mvn -q -B -DskipTests install", { cwd = dir, timeout = "900s", check = true })
-  shell.run("mvn -q -B -nsu -pl example-service-server -DskipTests package spring-boot:repackage",
-    { cwd = dir, timeout = "900s", check = true })
 end
 
 -- One entry per DB-backed rendering variant. `db` is the container plugin; the count SQL carries the
@@ -115,16 +112,15 @@ for _, v in ipairs(VARIANTS) do
     ctx:manage(shell.spawn("java -jar " .. BOOT_JAR, {
       cwd = root.path,
       env = {
-        -- application.yaml binds these from the environment.
-        SERVER_PORT            = port,
-        MANAGEMENT_PORT        = mgmt,
-        -- application-persistence.yaml carries the datasource; the profile activates it.
-        SPRING_PROFILES_ACTIVE = "persistence",
-        DB_HOST                = db.host,
-        DB_PORT                = db.port,
-        DB_DBNAME              = "prova",
-        DB_USERNAME            = "prova",
-        DB_PASSWORD            = "prova",
+        -- The platform env contract, nothing more: application.yaml binds the ports and
+        -- auto-includes the persistence profile, so no SPRING_PROFILES_ACTIVE is needed.
+        SERVER_PORT     = port,
+        MANAGEMENT_PORT = mgmt,
+        DB_HOST         = db.host,
+        DB_PORT         = db.port,
+        DB_DBNAME       = "prova",
+        DB_USERNAME     = "prova",
+        DB_PASSWORD     = "prova",
       },
     }))
 
@@ -132,7 +128,7 @@ for _, v in ipairs(VARIANTS) do
     -- database and the datasource health check passed against the container.
     local readiness = "http://127.0.0.1:" .. mgmt .. "/health/readiness"
     http.wait_for(readiness, { status = 200, timeout = "180s", every = "1s" })
-    return { readiness = readiness, db = db.client }
+    return { readiness = readiness, base = "http://127.0.0.1:" .. port, db = db.client }
   end)
 
   prova.group(label .. " boots against " .. v.persistence, { requires = { "docker", "mvn", "java" } }, function(g)
@@ -148,6 +144,20 @@ for _, v in ipairs(VARIANTS) do
       -- Query the very database the service is wired to: the schema-history table exists only
       -- because the booted service ran its migrations against this container.
       t:expect(svc.db:query_value(v.count_all), "applied migrations"):gte(1)
+    end)
+
+    g:test("the standard API persists to the real " .. v.persistence .. " database", function(t)
+      local svc = t:use(service)
+      local created = http.post(svc.base .. "/api/v1/examples", { json = { displayName = "widget" } })
+      t:expect(created.status):equals(201)
+      local body = created:json()
+      t:expect(body.displayName):equals("widget")
+      -- The row landed in the container the service is wired to, not an in-memory stand-in.
+      t:expect(
+        svc.db:query_value("SELECT count(*) FROM items WHERE display_name = 'widget'"),
+        "rows in the database"
+      ):equals(1)
+      t:expect(http.get(svc.base .. "/api/v1/examples/" .. body.id):json().displayName):equals("widget")
     end)
   end)
 end

@@ -16,3 +16,6 @@ format = "json"
 [plugins]
 postgres = "prova-rs/prova-postgres@v1"
 mysql    = "prova-rs/prova-mysql@v1"
+# The org standards suite (path-local while it incubates in this workspace — pin its git tag once
+# published).
+p6m      = { path = "../prova-p6m-standards" }

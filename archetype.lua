@@ -105,6 +105,12 @@ elseif context:get("persistence") == "MySQL" then
     require("java-resource-mysql").render(context, dest)
 end
 
+-- The standard CRUD surface (p6m standards S2) rides on the persistence module: entity +
+-- repository land in the module the resource library just rendered; the controller in the server.
+if context:get("has_persistence") then
+    directory.render("contents/crud", context)
+end
+
 if context:get("has_cache") then
     require("java-resource-redis").render(context, dest)
 end

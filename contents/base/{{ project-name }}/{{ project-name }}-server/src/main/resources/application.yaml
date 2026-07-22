@@ -1,6 +1,12 @@
 spring:
   application:
     name: {{ project-name }}
+{% if has_persistence %}
+  profiles:
+    # The datasource lives in application-persistence.yaml; including the profile here means the
+    # platform's plain env contract (DB_HOST/DB_PORT/...) is enough — no profile env var needed.
+    include: persistence
+{% endif %}
 
 server:
   port: ${SERVER_PORT:{{ service_port }}}
@@ -11,7 +17,9 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,prometheus
+        # prometheus only (not the JSON `metrics` endpoint): both would contend for the /metrics
+        # path below, and the platform scrapes Prometheus text.
+        include: health,info,prometheus
       base-path: /
       path-mapping:
         health: health
@@ -21,6 +29,13 @@ management:
       show-details: always
       probes:
         enabled: true
+{% if has_persistence %}
+      group:
+        readiness:
+          # Readiness reflects dependency truth (p6m standards S5): not ready until the database
+          # is reachable.
+          include: readinessState,db
+{% endif %}
   metrics:
     tags:
       application: {{ project-name }}

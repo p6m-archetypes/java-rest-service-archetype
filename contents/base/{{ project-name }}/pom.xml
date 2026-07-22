@@ -101,6 +101,8 @@
                     <version>${maven-compiler-plugin.version}</version>
                     <configuration>
                         <release>${java.version}</release>
+                        <!-- Spring MVC resolves @PathVariable/@RequestParam names reflectively. -->
+                        <parameters>true</parameters>
                     </configuration>
                 </plugin>
                 <plugin>
