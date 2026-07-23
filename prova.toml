@@ -6,7 +6,7 @@
 proofs = ["tests"]
 jobs = 1
 
-# CI runs the same suite; capability gating (docker/mvn/java) handles what a runner lacks.
+# CI runs the same suite; docker is the only capability a runner needs (S8b).
 [profiles.ci]
 jobs = 1
 format = "json"
@@ -18,4 +18,4 @@ postgres = "prova-rs/prova-postgres@v1"
 mysql    = "prova-rs/prova-mysql@v1"
 # The org standards suite (path-local while it incubates in this workspace — pin its git tag once
 # published).
-p6m      = { path = "../prova-p6m-standards" }
+p6m      = "p6m-archetypes/prova-p6m-standards@v1"
