@@ -13,8 +13,8 @@ import java.util.UUID;
  * The table is service-internal; the name-derived API surface lives at the transport boundary.
  */
 @Entity
-@Table(name = "items")
-public class Item {
+@Table(name = "{{ entity_name }}s")
+public class {{ EntityName }} {
 
     @Id
     @Column(name = "id", length = 36)
@@ -23,10 +23,10 @@ public class Item {
     @Column(name = "display_name", nullable = false)
     private String displayName;
 
-    protected Item() {
+    protected {{ EntityName }}() {
     }
 
-    public Item(String displayName) {
+    public {{ EntityName }}(String displayName) {
         this.displayName = displayName;
     }
 

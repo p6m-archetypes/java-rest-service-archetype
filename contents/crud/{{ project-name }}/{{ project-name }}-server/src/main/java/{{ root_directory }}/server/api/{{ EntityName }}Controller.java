@@ -1,7 +1,7 @@
 package {{ root_package }}.server.api;
 
-import {{ group_id }}.persistence.Item;
-import {{ group_id }}.persistence.ItemRepository;
+import {{ group_id }}.persistence.{{ EntityName }};
+import {{ group_id }}.persistence.{{ EntityName }}Repository;
 
 import java.util.List;
 
@@ -23,49 +23,49 @@ import org.springframework.web.bind.annotation.RestController;
  * (POST 201 / GET 200 / PUT 200 / DELETE 204 / 404 for unknown ids).
  */
 @RestController
-@RequestMapping("/api/v1/{{ prefix-name }}s")
-public class ItemController {
+@RequestMapping("/api/v1/{{ entity-name }}s")
+public class {{ EntityName }}Controller {
 
-    public record ItemRequest(String displayName) {
+    public record {{ EntityName }}Request(String displayName) {
     }
 
-    public record ItemResponse(String id, String displayName) {
+    public record {{ EntityName }}Response(String id, String displayName) {
     }
 
-    private final ItemRepository repository;
+    private final {{ EntityName }}Repository repository;
 
-    public ItemController(ItemRepository repository) {
+    public {{ EntityName }}Controller({{ EntityName }}Repository repository) {
         this.repository = repository;
     }
 
-    private static ItemResponse toResponse(Item item) {
-        return new ItemResponse(item.getId(), item.getDisplayName());
+    private static {{ EntityName }}Response toResponse({{ EntityName }} {{ entity_name }}) {
+        return new {{ EntityName }}Response({{ entity_name }}.getId(), {{ entity_name }}.getDisplayName());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemResponse create(@RequestBody ItemRequest request) {
-        return toResponse(repository.save(new Item(request.displayName())));
+    public {{ EntityName }}Response create(@RequestBody {{ EntityName }}Request request) {
+        return toResponse(repository.save(new {{ EntityName }}(request.displayName())));
     }
 
     @GetMapping
-    public List<ItemResponse> list() {
-        return repository.findAll().stream().map(ItemController::toResponse).toList();
+    public List<{{ EntityName }}Response> list() {
+        return repository.findAll().stream().map({{ EntityName }}Controller::toResponse).toList();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ItemResponse> get(@PathVariable("id") String id) {
+    public ResponseEntity<{{ EntityName }}Response> get(@PathVariable("id") String id) {
         return repository.findById(id)
-                .map(item -> ResponseEntity.ok(toResponse(item)))
+                .map({{ entity_name }} -> ResponseEntity.ok(toResponse({{ entity_name }})))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ItemResponse> update(@PathVariable("id") String id, @RequestBody ItemRequest request) {
+    public ResponseEntity<{{ EntityName }}Response> update(@PathVariable("id") String id, @RequestBody {{ EntityName }}Request request) {
         return repository.findById(id)
-                .map(item -> {
-                    item.setDisplayName(request.displayName());
-                    return ResponseEntity.ok(toResponse(repository.save(item)));
+                .map({{ entity_name }} -> {
+                    {{ entity_name }}.setDisplayName(request.displayName());
+                    return ResponseEntity.ok(toResponse(repository.save({{ entity_name }})));
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

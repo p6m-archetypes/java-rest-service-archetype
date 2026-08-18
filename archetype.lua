@@ -1,15 +1,11 @@
 local context = Context.new()
 
--- Identity
-require("author").prompt(context)
-require("org").prompt(context)
-
-context:set("suffix_options", { "Service", "Orchestrator", "Adapter", "Router", "Gateway" })
-context:set("suffix_default", "Service")
-require("project").prompt(context)
-
-context:set("repo_name", context:get("project-name"))
-context:set("github_owner", context:get("org-solution-name"))
+-- Identity (S1). One library, one implementation: p6m-identity asks for the project name, the
+-- solution slug, and the sample CRUD entity defaulted off the project name. It replaces the
+-- author x org x project composition — nothing this archetype renders read the author, and
+-- org_name x solution_name were two prompts building one string.
+local identity = require("p6m-identity")
+identity.prompt(context)
 
 -- Java-specific identity
 --
@@ -18,8 +14,10 @@ local function pkg_segment(value)
     return string.lower((string.gsub(tostring(value), "[^%w]", "")))
 end
 
--- groupId is the shared Maven coordinate for the whole solution (org.solution).
-local group_id_default = pkg_segment(context:get("org_name")) .. "." .. pkg_segment(context:get("solution_name"))
+-- groupId is the shared Maven coordinate for the whole solution. The solution slug IS the
+-- org/solution pair the fleet used to ask for twice (`acme-payments`), so the coordinate is that
+-- slug with its separator swapped: acme-payments -> acme.payments.
+local group_id_default = (string.gsub(context:get("solution-name"), "%-", "."))
 context:prompt_text("Maven Group ID:", "group_id", {
     default = group_id_default,
     help = "Maven groupId shared across the solution (e.g. " .. group_id_default .. ")",
@@ -31,14 +29,17 @@ context:prompt_text("Artifactory Host:", "artifactory_host", {
 })
 
 -- Derived keys
--- root_package adds the project prefix so each application owns its own package
--- namespace under the shared solution groupId (e.g. org.solution.prefix).
-context:set("root_package", context:get("group_id") .. "." .. pkg_segment(context:get("prefix-name")))
-context:set("project_title", context:get("PrefixName") .. " " .. context:get("SuffixName"))
+--
+-- root_package is named after the PROJECT, not the entity: it is where this application's code
+-- lives, so it must not move when someone answers a different `entity_name`. (It used to be built
+-- from `prefix_name`, back when one answer was doing both jobs.)
+context:set("root_package", context:get("group_id") .. "." .. pkg_segment(context:get("project-name")))
 context:set("root_directory", (string.gsub(context:get("root_package"), "%.", "/")))
 
 -- Service configuration
-require("ports").prompt(context, { ports = { "service", "management", "debug" } })
+-- `debug` is not asked: nothing this archetype renders reads `debug_port` — a prompt whose answer
+-- nothing consumes cannot justify itself (S1b / E2).
+require("ports").prompt(context, { ports = { "service", "management" } })
 
 -- Resources
 context:prompt_select("Persistence:", "persistence", {
