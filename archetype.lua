@@ -42,6 +42,13 @@ context:set("root_package", context:get("group_id") .. "." .. pkg_segment(contex
 context:set("root_directory", (string.gsub(context:get("root_package"), "%.", "/")))
 
 -- Service configuration
+-- The image registry, asked here rather than by `platform.prompt()` below. It is a deployment
+-- fact that belongs beside the solution slug; the manifests library runs last (it needs the
+-- resource selections), so leaving it to that call puts the registry dead last in the derived
+-- interface — after Source Control — which is exactly where a form should not put it. The library
+-- still owns the prompt; `platform.prompt()` finds it answered and skips it.
+require("platform-application-manifests").prompt_registry(context)
+
 -- `debug` is not asked: nothing this archetype renders reads `debug_port` — a prompt whose answer
 -- nothing consumes cannot justify itself (S1b / E2).
 require("ports").prompt(context, { ports = { "service", "management" } })
