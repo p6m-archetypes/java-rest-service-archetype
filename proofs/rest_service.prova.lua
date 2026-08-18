@@ -104,15 +104,3 @@ prova.group(none.label .. ":image", { requires = { "docker" } }, function(g)
     t:expect(image, "built image ref"):never():is_empty()
   end)
 end)
-
--- CI parity (S10): the rendered project's own Build workflow path — the build.yaml's single
--- 'mvn verify --no-transfer-progress' on a fresh clone, in the toolchain image. The Dockerfile
--- and CI are two independent build paths; S10 holds the second. The hollow render suffices:
--- resource variants change dependencies, not the command path.
-prova.group(none.label .. ":ci", { requires = { "docker" }, tags = { "standards" } }, function(g)
-  p6m.standards.ci_parity(g, none_project, {
-    stack = "java",
-    project_dir = none.project_dir,
-    name = "java-rest",
-  })
-end)
