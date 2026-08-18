@@ -3,7 +3,7 @@
 ---
 --- Every rendering comes from `p6m.spec{}` + `p6m.render` — the shape harness — so the paths this
 --- file expects are BUILT from the same identity the archetype was answered with, never spelled by
---- hand. A hand-spelled path list is how `example-service/.../Item.java` outlived the entity it was
+--- hand. A hand-spelled path list is how `example-service/.../Example.java` outlived the entity it was
 --- named for.
 ---
 --- The BEHAVIORAL bar — CRUD through the production image, the platform env contract, health/

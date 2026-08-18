@@ -6,7 +6,7 @@ prova = ">= 0.16"
 # jobs = 1: the suite renders the archetype several times and boots real services against database
 # containers; serial execution keeps those heavy units from contending for CPU, memory, and Docker.
 [run]
-proofs = ["tests"]
+proofs = ["proofs"]
 jobs = 1
 
 # CI runs the same suite; docker is the only capability a runner needs (S8b).
