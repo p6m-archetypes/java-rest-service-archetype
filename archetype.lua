@@ -14,14 +14,19 @@ local function pkg_segment(value)
     return string.lower((string.gsub(tostring(value), "[^%w]", "")))
 end
 
--- groupId is the shared Maven coordinate for the whole solution. The solution slug IS the
--- org/solution pair the fleet used to ask for twice (`acme-payments`), so the coordinate is that
--- slug with its separator swapped: acme-payments -> acme.payments.
-local group_id_default = (string.gsub(context:get("solution-name"), "%-", "."))
+-- groupId is the shared Maven coordinate for the whole solution. Asked OPTIONAL and derived
+-- after: a default computed from `solution_name` cannot be known until that prompt is answered,
+-- so an interface probe resolves it against a placeholder and ships that to every client. The
+-- help states the derivation instead of interpolating a value into it.
 context:prompt_text("Maven Group ID:", "group_id", {
-    default = group_id_default,
-    help = "Maven groupId shared across the solution (e.g. " .. group_id_default .. ")",
+    optional    = true,
+    placeholder = "acme.payments",
+    help        = "Maven groupId shared across the solution. Leave blank to use the solution slug "
+        .. "with its separator swapped (acme-payments -> acme.payments).",
 })
+if context:get("group_id") == nil or context:get("group_id") == "" then
+    context:set("group_id", (string.gsub(context:get("solution-name"), "%-", ".")))
+end
 
 context:prompt_text("Artifactory Host:", "artifactory_host", {
     placeholder = "your-org.jfrog.io",
