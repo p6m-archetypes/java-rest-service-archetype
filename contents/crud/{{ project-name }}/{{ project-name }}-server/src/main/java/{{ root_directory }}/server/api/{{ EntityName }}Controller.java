@@ -1,6 +1,6 @@
 package {{ root_package }}.server.api;
 
-import {{ group_id }}.persistence.{{ EntityName }};
+import {{ group_id }}.persistence.{{ EntityName }}Entity;
 import {{ group_id }}.persistence.{{ EntityName }}Repository;
 
 import java.util.List;
@@ -38,14 +38,14 @@ public class {{ EntityName }}Controller {
         this.repository = repository;
     }
 
-    private static {{ EntityName }}Response toResponse({{ EntityName }} {{ entity_name }}) {
+    private static {{ EntityName }}Response toResponse({{ EntityName }}Entity {{ entity_name }}) {
         return new {{ EntityName }}Response({{ entity_name }}.getId(), {{ entity_name }}.getDisplayName());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public {{ EntityName }}Response create(@RequestBody {{ EntityName }}Request request) {
-        return toResponse(repository.save(new {{ EntityName }}(request.displayName())));
+        return toResponse(repository.save(new {{ EntityName }}Entity(request.displayName())));
     }
 
     @GetMapping

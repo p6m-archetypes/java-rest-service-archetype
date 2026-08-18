@@ -14,7 +14,7 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "{{ entity_name }}s")
-public class {{ EntityName }} {
+public class {{ EntityName }}Entity {
 
     @Id
     @Column(name = "id", length = 36)
@@ -23,10 +23,10 @@ public class {{ EntityName }} {
     @Column(name = "display_name", nullable = false)
     private String displayName;
 
-    protected {{ EntityName }}() {
+    protected {{ EntityName }}Entity() {
     }
 
-    public {{ EntityName }}(String displayName) {
+    public {{ EntityName }}Entity(String displayName) {
         this.displayName = displayName;
     }
 

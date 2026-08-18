@@ -50,7 +50,7 @@ local function paths(s)
       -- because Maven passes an explicit file list, and PersistenceConfig pins its @EntityScan to
       -- the declared package, so it works. Asserting the DIRECTORY is what this check is about.
       p .. "-persistence/src/main/java/" .. pkg .. "/persistence/PersistenceConfig.java",
-      p .. "-persistence/src/main/java/" .. pkg .. "/persistence/" .. s.id.EntityName .. ".java",
+      p .. "-persistence/src/main/java/" .. pkg .. "/persistence/" .. s.id.EntityName .. "Entity.java",
       p .. "-persistence/src/main/java/" .. pkg .. "/persistence/" .. s.id.EntityName .. "Repository.java",
       p .. "-persistence/src/main/resources/db/migration/V1__init.sql",
       p .. "-persistence/src/main/resources/db/migration/V2__create_" .. s.table_name .. ".sql",
