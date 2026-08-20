@@ -48,9 +48,17 @@ context:page({ title = "Project", key = "project",
             ctx:set("group_id", (string.gsub(ctx:get("solution-name"), "%-", ".")))
         end
 
+        -- OPTIONAL, deliberately. This was the one prompt a first-time user could not answer:
+        -- a registry hostname nobody outside the owning org knows, with no default, blocking the
+        -- form. A scaffold has no business requiring a package registry to exist — so when it is
+        -- absent the pom simply omits its distributionManagement, and `mvn deploy` is a thing you
+        -- configure when you have somewhere to deploy to. Ybor Studio supplies it per solution
+        -- (see p6m-catalog's README), which is where a company-specific hostname belongs.
         ctx:prompt_text("Artifactory Host:", "artifactory_host", {
+            optional    = true,
             placeholder = "your-org.jfrog.io",
-            help        = "JFrog Artifactory hostname for Maven repository",
+            help        = "JFrog Artifactory hostname for the Maven repository. Leave blank to "
+                .. "omit publishing configuration from the pom.",
         })
     end)
 

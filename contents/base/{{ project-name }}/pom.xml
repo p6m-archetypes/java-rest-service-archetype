@@ -15,7 +15,6 @@
         <logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
         <micrometer-tracing.version>1.4.5</micrometer-tracing.version>
         <opentelemetry-exporter-otlp.version>1.46.0</opentelemetry-exporter-otlp.version>
-        <jib-maven-plugin.version>3.4.4</jib-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
@@ -34,6 +33,8 @@
         <module>{{ project-name }}-integration-tests</module>
     </modules>
 
+    {% if artifactory_host %}
+    <!-- Publishing config is emitted only when an Artifactory host was given. -->
     <distributionManagement>
         <repository>
             <id>central</id>
@@ -46,6 +47,7 @@
             <url>https://{{ artifactory_host }}/artifactory/{{ org-solution-name }}-libs-snapshot</url>
         </snapshotRepository>
     </distributionManagement>
+    {% endif %}
 
     <dependencyManagement>
         <dependencies>
@@ -119,19 +121,6 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                     <version>${spring-boot.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>com.google.cloud.tools</groupId>
-                    <artifactId>jib-maven-plugin</artifactId>
-                    <version>${jib-maven-plugin.version}</version>
-                    <configuration>
-                        <from>
-                            <image>eclipse-temurin:21-jre</image>
-                        </from>
-                        <to>
-                            <image>{{ artifactory_host }}/{{ org-solution-name }}-docker-local/{{ project-name }}:${project.version}</image>
-                        </to>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
