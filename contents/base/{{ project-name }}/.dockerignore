@@ -1,0 +1,10 @@
+# Keep host build state and VCS out of the image build context — both Dockerfiles COPY . . and a
+# host build's target/ would shadow the clean in-image Maven build.
+**/target/
+.git/
+.jj/
+.platform/
+.idea/
+.vscode/
+*.iml
+*.md

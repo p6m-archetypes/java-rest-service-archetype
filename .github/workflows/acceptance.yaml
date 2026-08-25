@@ -1,0 +1,23 @@
+name: Acceptance
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  acceptance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: prova-rs/run-action@v1
+        with:
+          profile: ci
+          # -U: floating @v1 plugin pins are tag-pins, which the git cache treats as immutable —
+          # force-update so a moved v1 (a spec release) is picked up on warm caches.
+          args: "-U"
