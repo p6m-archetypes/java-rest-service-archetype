@@ -41,8 +41,8 @@ context:page({ title = "Project", key = "project",
         ctx:prompt_text("Maven Group ID:", "group_id", {
             optional    = true,
             placeholder = "acme.payments",
-            help        = "Maven groupId shared across the solution. Leave blank to use the "
-                .. "solution slug with its separator swapped (acme-payments -> acme.payments).",
+            help        = "Maven groupId shared across the organization. Leave blank to use the "
+                .. "organization name with its separator swapped (acme-payments -> acme.payments).",
         })
         if ctx:get("group_id") == nil or ctx:get("group_id") == "" then
             ctx:set("group_id", (string.gsub(ctx:get("solution-name"), "%-", ".")))
