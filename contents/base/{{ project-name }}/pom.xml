@@ -38,13 +38,13 @@
     <distributionManagement>
         <repository>
             <id>central</id>
-            <name>{{ org-solution-name }}-libs-release</name>
-            <url>https://{{ artifactory_host }}/artifactory/{{ org-solution-name }}-libs-release</url>
+            <name>{{ organization-name }}-libs-release</name>
+            <url>https://{{ artifactory_host }}/artifactory/{{ organization-name }}-libs-release</url>
         </repository>
         <snapshotRepository>
             <id>snapshots</id>
-            <name>{{ org-solution-name }}-libs-snapshot</name>
-            <url>https://{{ artifactory_host }}/artifactory/{{ org-solution-name }}-libs-snapshot</url>
+            <name>{{ organization-name }}-libs-snapshot</name>
+            <url>https://{{ artifactory_host }}/artifactory/{{ organization-name }}-libs-snapshot</url>
         </snapshotRepository>
     </distributionManagement>
     {% endif %}

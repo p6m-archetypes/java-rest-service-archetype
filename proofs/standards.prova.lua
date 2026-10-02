@@ -27,7 +27,7 @@ local VARIANTS = {
 for _, v in ipairs(VARIANTS) do
   local spec = p6m.spec{
     language = "java", shape = "full", transport = "rest",
-    project = v.project, entity = v.entity, solution = "acme-platform",
+    project = v.project, entity = v.entity, organization = "acme-platform",
     persistence = v.persistence, registry = "ghcr.io/acme",
     answers = LANG_ANSWERS,
   }
@@ -63,7 +63,7 @@ end
 -- DEFAULTED prompt survives. Hermetic; no docker.
 local archetype_spec = p6m.spec{
   language = "java", shape = "full", transport = "rest",
-  project = "billing-service", entity = "billing", solution = "acme-platform",
+  project = "billing-service", entity = "billing", organization = "acme-platform",
   registry = "ghcr.io/acme",
     answers = LANG_ANSWERS,
 }
@@ -80,7 +80,7 @@ end)
 -- One hollow render suffices: resource variants change dependencies, not the command path.
 local ci_spec = p6m.spec{
   language = "java", shape = "full", transport = "rest",
-  project = "example-service", entity = "example", solution = "acme-platform",
+  project = "example-service", entity = "example", organization = "acme-platform",
   persistence = "None", registry = "ghcr.io/acme",
     answers = LANG_ANSWERS,
 }
