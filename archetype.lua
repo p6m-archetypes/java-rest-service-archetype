@@ -25,34 +25,36 @@ context:page({ title = "Project", key = "project",
     identity.prompt_project(ctx)
 
     -- The deployment coordinates, grouped deliberately: this is exactly the set Ybor Studio
-    -- supplies per solution, so hiding them later is "this section came back empty" rather than a
-    -- re-grouping exercise.
+    -- supplies per organization, so hiding them later is "this section came back empty" rather
+    -- than a re-grouping exercise.
     ctx:section({ title = "Platform", key = "platform",
                   help = "Where this service deploys and publishes." }, function(ctx)
-        identity.prompt_solution(ctx)
+        identity.prompt_organization(ctx)
 
         -- The registry is asked here rather than by `platform.prompt()` below: the manifests
         -- library runs last (it needs the resource selections), which would put the registry dead
         -- last in the derived interface. The library still owns the prompt definition.
         require("platform-application-manifests").prompt_registry(ctx)
 
-        -- Asked OPTIONAL and derived after: an envelope computed from `solution_name` cannot be
-        -- known until that prompt is answered, so a probe would resolve it against a placeholder.
+        -- Asked OPTIONAL and derived after: an envelope computed from `organization_name` cannot
+
+
+        -- be known until that prompt is answered, so a probe would resolve it against a placeholder.
         ctx:prompt_text("Maven Group ID:", "group_id", {
             optional    = true,
             placeholder = "acme.payments",
-            help        = "Maven groupId shared across the solution. Leave blank to use the "
-                .. "solution slug with its separator swapped (acme-payments -> acme.payments).",
+            help        = "Maven groupId shared across the organization. Leave blank to use the "
+                .. "organization name with its separator swapped (acme-payments -> acme.payments).",
         })
         if ctx:get("group_id") == nil or ctx:get("group_id") == "" then
-            ctx:set("group_id", (string.gsub(ctx:get("solution-name"), "%-", ".")))
+            ctx:set("group_id", (string.gsub(ctx:get("organization-name"), "%-", ".")))
         end
 
         -- OPTIONAL, deliberately. This was the one prompt a first-time user could not answer:
         -- a registry hostname nobody outside the owning org knows, with no default, blocking the
         -- form. A scaffold has no business requiring a package registry to exist — so when it is
         -- absent the pom simply omits its distributionManagement, and `mvn deploy` is a thing you
-        -- configure when you have somewhere to deploy to. Ybor Studio supplies it per solution
+        -- configure when you have somewhere to deploy to. Ybor Studio supplies it per organization
         -- (see p6m-catalog's README), which is where a company-specific hostname belongs.
         ctx:prompt_text("Artifactory Host:", "artifactory_host", {
             optional    = true,

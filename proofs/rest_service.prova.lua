@@ -19,7 +19,7 @@ local LANG_ANSWERS = { group_id = "acme.platform", artifactory_host = "acme.jfro
 local function spec_for(persistence)
   return p6m.spec{
     language = "java", shape = "full", transport = "rest",
-    project = "example-service", entity = "example", solution = "acme-platform",
+    project = "example-service", entity = "example", organization = "acme-platform",
     persistence = persistence, registry = "ghcr.io/acme", answers = LANG_ANSWERS,
   }
 end
